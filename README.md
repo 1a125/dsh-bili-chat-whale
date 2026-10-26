@@ -5,12 +5,14 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > GitHub：https://github.com/1a125/dsh-bili-chat-whale
-> 最新发布：https://github.com/1a125/dsh-bili-chat-whale/releases/tag/v0.1.2
+> 最新发布：https://github.com/1a125/dsh-bili-chat-whale/releases/tag/v0.1.3
 
 让 DSH 里的 agent **自己去找冷清的 B 站直播间**，蹲进去，**听懂主播在说什么、看懂画面在发生什么**，再用一句短弹幕陪聊。初衷很实在：刚开播、没什么观众的直播间，缺一个会接话的人。
 
-- 自主发现：按兴趣关键词搜直播间，按「人少 + 兴趣命中 + 新主播」挑房间
-- 蹲房：弹幕 WebSocket 常驻，主播下播 / 待够时间自动换下一间
+- 自主发现：按兴趣关键词搜直播间，**多条关键词同时命中优先**，按「人少 + 兴趣命中 + 新主播」挑房间
+- 分区导航：可只进某些直播分区，也可排除多个不想去的分区（父分区/子分区名都匹配）
+- 蹲房：弹幕 WebSocket 常驻，主播下播 / 待够时间 / **连续没声音没画面 / 抓流失败**自动换下一间
+- 刷新候选：设置页「刷新候选」真正重跑发现；「下一间」直接进入当前评分最高的候选，而不是只换列表
 - 听懂：本地 **SenseVoice** 语音识别（不上传音频），每 20 秒听一段
 - 看懂：**DSH 视觉模型 → HTTP 视觉接口 → Windows 本机 OCR** 三级梯队
 - 会说话：到点叫醒属于它自己的 DSH 会话，让 agent 决定说一句还是闭嘴；所有发言过闸门

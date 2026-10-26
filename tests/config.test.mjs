@@ -39,6 +39,28 @@ test('normalizeConfig rejects an unknown mode and only the literal false disable
 test('defaults keep dry-run and a modest speaking budget', () => {
   assert.equal(DEFAULTS.interaction.dryRun, true)
   assert.equal(DEFAULTS.interests.maxViewers, 30)
+  assert.equal(DEFAULTS.interests.autoLeaveBoring, true)
+  assert.equal(DEFAULTS.interests.boringEmptyStreak, 4)
+  assert.equal(DEFAULTS.interests.boringFailStreak, 3)
+  assert.deepEqual(DEFAULTS.interests.includeAreas, [])
+  assert.deepEqual(DEFAULTS.interests.excludeAreas, [])
   assert.equal(DEFAULTS.vision.mode, 'auto')
   assert.equal(DEFAULTS.mode, 'off')
+})
+
+test('partition and boring filters normalize lists and clamp thresholds', () => {
+  const next = normalizeConfig({
+    interests: {
+      includeAreas: '娱乐，网游, 娱乐',
+      excludeAreas: ['手游', '手游'],
+      autoLeaveBoring: false,
+      boringEmptyStreak: 1,
+      boringFailStreak: 99,
+    },
+  }, DEFAULTS)
+  assert.deepEqual(next.interests.includeAreas, ['娱乐', '网游'])
+  assert.deepEqual(next.interests.excludeAreas, ['手游'])
+  assert.equal(next.interests.autoLeaveBoring, false)
+  assert.equal(next.interests.boringEmptyStreak, 2)
+  assert.equal(next.interests.boringFailStreak, 10)
 })

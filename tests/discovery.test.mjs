@@ -37,6 +37,28 @@ test('scoreRoom rejects rooms visited in the last 7 days and offline rooms', () 
   assert.equal(scoreRoom(room({ liveStatus: 0 }), config, state).score, -Infinity)
 })
 
+test('multi-keyword rooms outrank single-keyword rooms', () => {
+  const multiConfig = normalizeConfig({ interests: { keywords: ['聊天', '编程'], avoidKeywords: [] } }, DEFAULTS)
+  const one = scoreRoom(room({ title: '编程直播', category: '学习', tags: [] }), multiConfig, state)
+  const two = scoreRoom(room({ title: '编程聊天', category: '学习', tags: [] }), multiConfig, state)
+  assert.deepEqual(one.hits, ['编程'])
+  assert.deepEqual(two.hits, ['聊天', '编程'])
+  assert.ok(two.score > one.score + 15, `${two.score} should clearly beat ${one.score}`)
+})
+
+test('include/exclude partitions filter after room info, and avoid false rejects during search', () => {
+  const areaConfig = normalizeConfig({
+    interests: { keywords: ['聊天'], includeAreas: ['娱乐'], excludeAreas: ['手游'] },
+  }, DEFAULTS)
+  // 复核后拿到 parentArea
+  assert.ok(scoreRoom(room({ parentArea: '娱乐', area: '聊天电台' }), areaConfig, state).score > 0)
+  assert.equal(scoreRoom(room({ parentArea: '手游', area: '王者荣耀' }), areaConfig, state).score, -Infinity)
+  assert.equal(scoreRoom(room({ parentArea: '娱乐', area: '手游' }), areaConfig, state).score, -Infinity)
+  // 搜索阶段没有 parentArea：排除词仍可按 cate_name 命中；只进条件先放过
+  assert.equal(scoreRoom(room({ parentArea: undefined, area: 6, category: '手游' }), areaConfig, state).score, -Infinity)
+  assert.ok(scoreRoom(room({ parentArea: undefined, area: 6, category: '聊天电台' }), areaConfig, state).score > 0)
+})
+
 test('day key is a local YYYY-MM-DD', () => {
   assert.match(todayKey(), /^\d{4}-\d{2}-\d{2}$/)
 })
