@@ -42,6 +42,8 @@ test('defaults keep dry-run and a modest speaking budget', () => {
   assert.equal(DEFAULTS.interests.autoLeaveBoring, true)
   assert.equal(DEFAULTS.interests.boringEmptyStreak, 4)
   assert.equal(DEFAULTS.interests.boringFailStreak, 3)
+  assert.equal(DEFAULTS.interests.maxPopularity, 3000)
+  assert.equal(DEFAULTS.interests.revisitHours, 6)
   assert.deepEqual(DEFAULTS.interests.includeAreas, [])
   assert.deepEqual(DEFAULTS.interests.excludeAreas, [])
   assert.equal(DEFAULTS.vision.mode, 'auto')

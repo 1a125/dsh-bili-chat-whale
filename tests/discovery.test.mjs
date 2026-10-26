@@ -5,7 +5,7 @@ import { DEFAULTS, normalizeConfig } from '../lib/config.js'
 import { defaultState, todayKey } from '../lib/store.js'
 
 const config = normalizeConfig({
-  interests: { keywords: ['聊天', '编程'], avoidKeywords: ['带货'], maxViewers: 30, minViewers: 0 },
+  interests: { keywords: ['聊天', '编程'], avoidKeywords: ['带货'], maxPopularity: 3000 },
 }, DEFAULTS)
 const state = { ...defaultState(), visited: {} }
 
@@ -22,10 +22,11 @@ test('matchesInterests finds keyword hits and avoid hits', () => {
 
 test('scoreRoom prefers quiet fresh rooms and rejects blocked ones', () => {
   const quiet = scoreRoom(room(), config, state)
-  const loud = scoreRoom(room({ online: 25 }), config, state)
+  const loud = scoreRoom(room({ online: 2500 }), config, state)
   assert.ok(quiet.score > loud.score, `${quiet.score} > ${loud.score}`)
   assert.equal(scoreRoom(room({ title: '带货清仓' }), config, state).score, -Infinity)
-  assert.equal(scoreRoom(room({ online: 99 }), config, state).score, -Infinity)
+  assert.equal(scoreRoom(room({ online: 99 }), config, state).score > 0, true)
+  assert.equal(scoreRoom(room({ online: 9999 }), config, state).score, -Infinity)
   assert.equal(scoreRoom(room({ online: 0 }), config, state).score > 0, true)
 })
 
