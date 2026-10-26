@@ -68,6 +68,14 @@ test('empty keyword list means no keyword penalty', () => {
   assert.ok(withoutKeywords.score > withKeywords.score, 'empty keywords should not get the no-hit penalty')
 })
 
+test('special-follow room gets a weight but still obeys the revisit cooldown', () => {
+  const special = scoreRoom(room({ special: true }), config, state)
+  const normal = scoreRoom(room(), config, state)
+  assert.ok(special.score > normal.score + 30, 'special room should rank meaningfully higher')
+  const recent = { ...state, visited: { 777: { at: Date.now() - 3600_000 } } }
+  assert.equal(scoreRoom(room({ special: true }), config, recent).score, -Infinity)
+})
+
 test('day key is a local YYYY-MM-DD', () => {
   assert.match(todayKey(), /^\d{4}-\d{2}-\d{2}$/)
 })
