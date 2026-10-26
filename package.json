@@ -43,7 +43,7 @@
     }
   },
   "scripts": {
-    "test": "node --test tests/config.test.mjs tests/policy.test.mjs tests/discovery.test.mjs tests/bili.test.mjs tests/inject.test.mjs tests/session.test.mjs tests/auto-leave.test.mjs tests/clarify.test.mjs tests/special.test.mjs"
+    "test": "node --test tests/config.test.mjs tests/policy.test.mjs tests/discovery.test.mjs tests/bili.test.mjs tests/inject.test.mjs tests/session.test.mjs tests/auto-leave.test.mjs tests/clarify.test.mjs tests/special.test.mjs tests/update.test.mjs"
   },
   "repository": {
     "type": "git",
