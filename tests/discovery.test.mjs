@@ -60,6 +60,14 @@ test('include/exclude partitions filter after room info, and avoid false rejects
   assert.ok(scoreRoom(room({ parentArea: undefined, area: 6, category: '聊天电台' }), areaConfig, state).score > 0)
 })
 
+test('empty keyword list means no keyword penalty', () => {
+  const noKeywords = normalizeConfig({ interests: { keywords: [], maxPopularity: 3000 } }, DEFAULTS)
+  const sample = room({ title: '没有关键词的标题', category: '生活杂谈', tags: [] })
+  const withKeywords = scoreRoom(sample, config, state)
+  const withoutKeywords = scoreRoom(sample, noKeywords, state)
+  assert.ok(withoutKeywords.score > withKeywords.score, 'empty keywords should not get the no-hit penalty')
+})
+
 test('day key is a local YYYY-MM-DD', () => {
   assert.match(todayKey(), /^\d{4}-\d{2}-\d{2}$/)
 })

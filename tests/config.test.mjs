@@ -43,11 +43,17 @@ test('defaults keep dry-run and a modest speaking budget', () => {
   assert.equal(DEFAULTS.interests.boringEmptyStreak, 4)
   assert.equal(DEFAULTS.interests.boringFailStreak, 3)
   assert.equal(DEFAULTS.interests.maxPopularity, 3000)
-  assert.equal(DEFAULTS.interests.revisitHours, 6)
+  assert.equal(DEFAULTS.interests.revisitMinutes, 360)
   assert.deepEqual(DEFAULTS.interests.includeAreas, [])
   assert.deepEqual(DEFAULTS.interests.excludeAreas, [])
   assert.equal(DEFAULTS.vision.mode, 'auto')
   assert.equal(DEFAULTS.mode, 'off')
+})
+
+test('revisit cooldown accepts legacy hours and new minutes', () => {
+  assert.equal(normalizeConfig({ interests: { revisitHours: 2 } }, DEFAULTS).interests.revisitMinutes, 120)
+  assert.equal(normalizeConfig({ interests: { revisitMinutes: 45 } }, DEFAULTS).interests.revisitMinutes, 45)
+  assert.equal(normalizeConfig({ interests: { revisitMinutes: 0 } }, DEFAULTS).interests.revisitMinutes, 1)
 })
 
 test('partition and boring filters normalize lists and clamp thresholds', () => {
