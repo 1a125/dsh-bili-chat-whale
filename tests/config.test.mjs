@@ -50,6 +50,16 @@ test('defaults keep dry-run and a modest speaking budget', () => {
   assert.equal(DEFAULTS.mode, 'off')
 })
 
+test('patrol and speech clarification defaults are safe', () => {
+  assert.equal(DEFAULTS.patrol.enabled, true)
+  assert.equal(DEFAULTS.patrol.intervalSec, 30)
+  assert.equal(DEFAULTS.voice.clarify, true)
+  const next = normalizeConfig({ patrol: { intervalSec: 1 }, voice: { clarify: false } }, DEFAULTS)
+  assert.equal(next.patrol.intervalSec, 5)
+  assert.equal(next.voice.clarify, false)
+  assert.equal(normalizeConfig({ patrol: { intervalSec: 99999 } }, DEFAULTS).patrol.intervalSec, 3600)
+})
+
 test('revisit cooldown accepts legacy hours and new minutes', () => {
   assert.equal(normalizeConfig({ interests: { revisitHours: 2 } }, DEFAULTS).interests.revisitMinutes, 120)
   assert.equal(normalizeConfig({ interests: { revisitMinutes: 45 } }, DEFAULTS).interests.revisitMinutes, 45)
