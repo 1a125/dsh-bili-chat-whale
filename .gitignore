@@ -9,3 +9,4 @@ bin/ffmpeg
 coverage/
 .vscode/
 .idea/
+package-lock.json
