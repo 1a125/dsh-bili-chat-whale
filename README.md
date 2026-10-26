@@ -130,6 +130,21 @@ dsh plugin --profile web add "github:1a125/dsh-bili-chat-whale"
 | 手动 | 直接进某个房间 | 短号/长号都行 |
 | 记录 | 最近在做什么 | 进房、观察、叫醒、发言、失败原因 |
 
+### 可选环境变量
+
+一般不用设；换机器/离线部署时才需要：
+
+| 变量 | 作用 |
+|---|---|
+| `FFMPEG` | 指定 ffmpeg 可执行文件（优先于自动查找） |
+| `CHAT_WHALE_NPM_REGISTRY` | ffmpeg 一键安装用的 npm 镜像（默认先 npmmirror，再 npmjs） |
+| `CHAT_WHALE_SHERPA` / `DSH_SHERPA_ROOT` | sherpa-onnx-node 包目录 |
+| `CHAT_WHALE_NODE` | 指定真正的 node.exe（桌面版 Electron 环境用） |
+| `CHAT_WHALE_VISION_API_KEY` | HTTP 视觉接口密钥（也可以存进 DSH 凭据服务或填在设置页） |
+| `CHAT_WHALE_CONFIG` | 覆盖配置文件路径 |
+
+仓库里**没有**任何 API Key、Cookie、本机绝对路径；密钥只进 DSH 凭据服务或环境变量。
+
 ---
 
 ## 四、它到底怎么说话（agent 协作）

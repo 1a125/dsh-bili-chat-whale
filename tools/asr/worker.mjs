@@ -194,6 +194,15 @@ const coreConfig = {
 
 process.stdout.write(JSON.stringify({ ready: true, sherpa: sherpaDir, threads, model }) + '\n')
 
+// 空闲 10 分钟自动退出，避免插件热重载/异常时留下吃内存的孤儿进程。
+// 宿主下一次 transcribe 会重新拉起（模型加载很快）。
+let idleTimer = null
+function resetIdle() {
+  if (idleTimer) clearTimeout(idleTimer)
+  idleTimer = setTimeout(() => { process.stderr.write('idle timeout\n'); process.exit(0) }, 10 * 60_000)
+}
+resetIdle()
+
 const rl = readline.createInterface({ input: process.stdin, crlfDelay: Infinity })
 let busy = false
 rl.on('line', (line) => {
@@ -217,6 +226,7 @@ rl.on('line', (line) => {
     process.stdout.write(JSON.stringify({ id: request.id ?? null, ok: false, error: String(error.message ?? error) }) + '\n')
   } finally {
     busy = false
+    resetIdle()
   }
 })
 rl.on('close', () => process.exit(0))
