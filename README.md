@@ -1,6 +1,11 @@
 # 聊天鲸 · dsh-bili-chat-whale
 
+[![test](https://github.com/1a125/dsh-bili-chat-whale/actions/workflows/test.yml/badge.svg)](https://github.com/1a125/dsh-bili-chat-whale/actions/workflows/test.yml)
+[![release](https://img.shields.io/github/v/release/1a125/dsh-bili-chat-whale)](https://github.com/1a125/dsh-bili-chat-whale/releases)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 > GitHub：https://github.com/1a125/dsh-bili-chat-whale
+> 最新发布：https://github.com/1a125/dsh-bili-chat-whale/releases/tag/v0.1.0
 
 让 DSH 里的 agent **自己去找冷清的 B 站直播间**，蹲进去，**听懂主播在说什么、看懂画面在发生什么**，再用一句短弹幕陪聊。初衷很实在：刚开播、没什么观众的直播间，缺一个会接话的人。
 
