@@ -1,0 +1,11 @@
+node_modules/
+scratch/
+bin/*.exe
+bin/ffmpeg
+*.log
+*.tgz
+*.zip
+.DS_Store
+coverage/
+.vscode/
+.idea/

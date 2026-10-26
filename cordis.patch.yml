@@ -1,0 +1,18 @@
+# ============================================================================
+# dsh-bili-chat-whale —— DSH bundle patch
+# ============================================================================
+# 把「聊天鲸」插进 profile 的配置树。
+#
+# 安装（本地目录，link 进 profile）：
+#   dsh plugin --profile web add "link:<插件目录的绝对路径>"
+# 或发布后：
+#   dsh plugin --profile web add dsh-bili-chat-whale
+#
+# ⚠️ name 必须与安装后的包名完全一致（dsh-bili-chat-whale），
+#    否则表现为「装上了但设置页里没有这一节」。
+# 装完后设置页在：DSH → 设置 → 聊天鲸
+# ============================================================================
+
+- insert:
+    - id: dsh-bili-chat-whale
+      name: dsh-bili-chat-whale

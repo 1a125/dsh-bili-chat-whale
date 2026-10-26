@@ -1,0 +1,59 @@
+{
+  "name": "dsh-bili-chat-whale",
+  "version": "0.1.0",
+  "description": "聊天鲸：让 DSH 里的 agent 自己去找冷清的 B 站直播间，听懂主播在说什么、看懂画面在发生什么，再开口陪聊。",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "bilibili",
+    "live",
+    "danmaku",
+    "agent",
+    "sensevoice"
+  ],
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "lib",
+    "tools",
+    "bin",
+    "cordis.patch.yml",
+    "locale",
+    "icon.svg",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [],
+      "platform": "web"
+    }
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1a125/dsh-bili-chat-whale.git"
+  },
+  "homepage": "https://github.com/1a125/dsh-bili-chat-whale#readme",
+  "bugs": {
+    "url": "https://github.com/1a125/dsh-bili-chat-whale/issues"
+  },
+  "author": "1a125",
+  "dependencies": {
+    "qrcode": "1.5.4"
+  },
+  "license": "MIT"
+}

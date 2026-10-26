@@ -1,0 +1,44 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { DEFAULTS, normalizeConfig } from '../lib/config.js'
+
+test('normalizeConfig keeps safe defaults and clamps numbers', () => {
+  const next = normalizeConfig({
+    mode: 'interact',
+    interests: { maxViewers: 999999, minViewers: -5, stayMinutes: 0, roomsPerHour: 999 },
+    interaction: { maxPerRoom: 99, minGapSec: 1, maxPerHour: 999, maxPerDay: 999 },
+    voice: { clipSeconds: 999, language: 'klingon' },
+    vision: { frames: 99, mode: 'nonsense' },
+    safety: { maxDanmakuChars: 99, blockedWords: '加群,微信, 加群' },
+  }, DEFAULTS)
+
+  assert.equal(next.mode, 'interact')
+  assert.equal(next.interests.maxViewers, 100000)
+  assert.equal(next.interests.minViewers, 0)
+  assert.equal(next.interests.stayMinutes, 1)
+  assert.equal(next.interests.roomsPerHour, 30)
+  assert.equal(next.interaction.maxPerRoom, 30)
+  assert.equal(next.interaction.minGapSec, 20)
+  assert.equal(next.interaction.maxPerDay, 500)
+  assert.equal(next.interaction.maxPerHour, 120, 'hour cap clamps to 120')
+  assert.equal(next.voice.clipSeconds, 60)
+  assert.equal(next.voice.language, 'zh')
+  assert.equal(next.vision.frames, 4)
+  assert.equal(next.vision.mode, 'auto')
+  assert.equal(next.safety.maxDanmakuChars, 20)
+  assert.deepEqual(next.safety.blockedWords, ['加群', '微信'])
+})
+
+test('normalizeConfig rejects an unknown mode and only the literal false disables dry-run', () => {
+  const next = normalizeConfig({ mode: 'attack', interaction: { dryRun: 'yes' } }, DEFAULTS)
+  assert.equal(next.mode, 'off')
+  assert.equal(next.interaction.dryRun, true)
+  assert.equal(normalizeConfig({ interaction: { dryRun: false } }, DEFAULTS).interaction.dryRun, false)
+})
+
+test('defaults keep dry-run and a modest speaking budget', () => {
+  assert.equal(DEFAULTS.interaction.dryRun, true)
+  assert.equal(DEFAULTS.interests.maxViewers, 30)
+  assert.equal(DEFAULTS.vision.mode, 'auto')
+  assert.equal(DEFAULTS.mode, 'off')
+})
