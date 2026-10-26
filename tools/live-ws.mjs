@@ -24,12 +24,30 @@ for (let i = 2; i < process.argv.length; i += 1) {
 const roomId = String(args.get('room') ?? '').replace(/\D/g, '')
 const outFile = String(args.get('out') ?? '')
 const maxMinutes = Math.max(1, Math.min(720, Number(args.get('minutes') ?? 180) || 180))
+const generation = String(args.get('generation') ?? '')
+const generationFile = String(args.get('generation-file') ?? '')
 if (!roomId || !outFile) {
   console.error('用法: node live-ws.mjs --room <房间号> --out <events.jsonl>')
   process.exit(2)
 }
 
 fs.mkdirSync(path.dirname(outFile), { recursive: true })
+
+// 插件热重载后旧实例的弹幕监听自行退出，避免残留连接和进程
+if (generation && generationFile) {
+  const timer = setInterval(() => {
+    try {
+      const current = JSON.parse(fs.readFileSync(generationFile, 'utf8'))
+      if (current?.id !== generation) {
+        console.error('插件实例已更换，弹幕监听退出')
+        process.exit(0)
+      }
+    } catch {
+      process.exit(0)
+    }
+  }, 30_000)
+  timer.unref?.()
+}
 
 function emit(event) {
   try { fs.appendFileSync(outFile, JSON.stringify({ t: Date.now(), ...event }) + '\n') } catch (error) {
@@ -174,13 +192,20 @@ async function connect() {
   const ws = new WebSocket(url)
   socket = ws
   ws.binaryType = 'arraybuffer'
+  // 常驻 error 监听：open 阶段的 once 监听只负责拒绝 promise，后续错误不能没人管
+  ws.addEventListener('error', (event) => {
+    console.error(`WS 错误：${event?.message ?? event?.type ?? ''}`)
+  })
 
   const opened = new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error('WebSocket 连接超时')), 20_000)
     ws.addEventListener('open', () => {
       clearTimeout(timer)
-      ws.send(packet(7, JSON.stringify({ uid: danmu.uid || 0, roomid: Number(info.roomId), protover: 3, platform: 'web', type: 2, key: danmu.token })))
+      // uid 必须是数字：未登录时 0；登录后 nav 返回的是字符串，直接塞进去 B 站会立刻断开
+      ws.send(packet(7, JSON.stringify({ uid: Number(danmu.uid) || 0, roomid: Number(info.roomId), protover: 3, platform: 'web', type: 2, key: danmu.token })))
       console.log('WS_READY')
+      attempts = 0
+      reconnecting = false
       resolve()
     }, { once: true })
     ws.addEventListener('error', (event) => {
@@ -206,8 +231,10 @@ async function connect() {
 }
 
 let attempts = 0
+let reconnecting = false
 function reconnect(reason) {
-  if (stopping) return
+  if (stopping || reconnecting) return
+  reconnecting = true
   attempts += 1
   if (attempts > 6) {
     console.error(`重连失败太多次：${reason}`)
@@ -215,10 +242,13 @@ function reconnect(reason) {
   }
   const wait = Math.min(30_000, 2000 * attempts)
   console.error(`WS 断开（${reason}），${Math.round(wait / 1000)} 秒后重连（第 ${attempts} 次）`)
-  setTimeout(() => connect().catch((error) => {
-    console.error(`重连失败：${error.message}`)
-    reconnect(error.message)
-  }), wait)
+  setTimeout(() => {
+    connect().catch((error) => {
+      console.error(`重连失败：${error.message}`)
+      reconnecting = false
+      reconnect(error.message)
+    })
+  }, wait)
 }
 
 // 看门狗：到点/主播下播就收工

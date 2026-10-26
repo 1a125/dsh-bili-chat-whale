@@ -1,5 +1,24 @@
 # Changelog
 
+## v0.1.1 — 稳定性修复（离开 / 换房不再卡死宿主）
+
+### 修了什么
+
+- **修复离开/换房时与进行中的抓流撞车**：抓流结束时如果 `room` 已被置空，旧代码会读 `room.observations` 抛 TypeError，catch 里再读一次 `room.captureErrors`，变成 unhandledRejection 直接把宿主带走。现在所有异步阶段都持有自己的 `session` 引用，房间变了就干净丢弃这一轮。
+- **弹幕监听的旧进程不再误伤新房间**：主动 stop 的进程标记为 retired；退出回调校验 roomId，避免「刚换房就被旧监听带走」或重复重挂。
+- **弹幕 WS 登录后连上即断**：`getDanmuInfo` 返回的 uid 是字符串，协议要数字；改成 `Number(uid) || 0`，并重置重连计数。
+- **设置页卡顿/重连**：去掉每次心跳同步递归扫描 `<DSH_HOME>/sessions` 的做法，改用 `sessionController.list()`（异步、5 秒缓存），不再阻塞宿主事件循环。
+- **子进程代际清理**：每次插件实例启动写一个 generation；旧的语音/弹幕子进程 30 秒内自行退出，避免热重载累积多个 SenseVoice 进程吃内存。
+- **兜底**：安装 `unhandledRejection` / `uncaughtException` 监听，记录到 `host.log` 并让进程继续；新增事件循环卡顿与设置保存耗时日志。
+- 新增回归测试：`tests/inject.test.mjs`（可选服务必须走 `ctx.get`）、`tests/session.test.mjs`（busy 不再扫文件系统）。
+
+### 验证
+
+- 3 轮「抓流中强制换房」压测：日志出现「观察完成但房间已切换，丢弃这一轮」，宿主 HTTP 仍存活，无 unhandled
+- 10 次设置保存在抓流期间完成：host 侧 1–2ms，无卡顿日志
+- 交互模式叫醒 + dry-run 发言正常
+- 23 个单元测试通过
+
 ## v0.1.0 — 首个公开版本
 
 ### 能做什么

@@ -96,6 +96,8 @@ const model = String(args.get('model') ?? path.join(modelDir, 'model.int8.onnx')
 const tokens = String(args.get('tokens') ?? path.join(modelDir, 'tokens.txt'))
 const vad = String(args.get('vad') ?? path.join(modelDir, 'silero_vad.onnx'))
 const threads = Math.max(1, Math.min(16, Number(args.get('threads') ?? 2) || 2))
+const generation = String(args.get('generation') ?? '')
+const generationFile = String(args.get('generation-file') ?? '')
 const sherpaDir = resolveSherpa(args.get('sherpa') ? String(args.get('sherpa')) : '')
 
 function fail(message) {
@@ -202,6 +204,22 @@ function resetIdle() {
   idleTimer = setTimeout(() => { process.stderr.write('idle timeout\n'); process.exit(0) }, 10 * 60_000)
 }
 resetIdle()
+
+// 插件热重载后新实例会写新的 generation；旧 worker 自行退出，避免多个模型进程吃内存。
+if (generation && generationFile) {
+  const timer = setInterval(() => {
+    try {
+      const current = JSON.parse(fs.readFileSync(generationFile, 'utf8'))
+      if (current?.id !== generation) {
+        process.stderr.write('插件实例已更换，worker 退出\n')
+        process.exit(0)
+      }
+    } catch {
+      process.exit(0)
+    }
+  }, 30_000)
+  timer.unref?.()
+}
 
 const rl = readline.createInterface({ input: process.stdin, crlfDelay: Infinity })
 let busy = false
