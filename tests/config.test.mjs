@@ -60,6 +60,16 @@ test('patrol and speech clarification defaults are safe', () => {
   assert.equal(normalizeConfig({ patrol: { intervalSec: 99999 } }, DEFAULTS).patrol.intervalSec, 3600)
 })
 
+test('follow defaults stay off and are clamped', () => {
+  assert.equal(DEFAULTS.follow.enabled, false)
+  assert.equal(DEFAULTS.follow.dailyLimit, 5)
+  assert.equal(DEFAULTS.followingPatrol.enabled, false)
+  const next = normalizeConfig({ follow: { dailyLimit: 0, minMessages: 99 }, followingPatrol: { enabled: true } }, DEFAULTS)
+  assert.equal(next.follow.dailyLimit, 1)
+  assert.equal(next.follow.minMessages, 20)
+  assert.equal(next.followingPatrol.enabled, true)
+})
+
 test('revisit cooldown accepts legacy hours and new minutes', () => {
   assert.equal(normalizeConfig({ interests: { revisitHours: 2 } }, DEFAULTS).interests.revisitMinutes, 120)
   assert.equal(normalizeConfig({ interests: { revisitMinutes: 45 } }, DEFAULTS).interests.revisitMinutes, 45)
