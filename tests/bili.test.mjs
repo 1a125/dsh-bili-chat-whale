@@ -20,6 +20,7 @@ test('headersFor includes the cookie only when credentials exist', () => {
   assert.equal(headersFor(null).cookie, undefined)
   const headers = headersFor({ sessdata: 's', bili_jct: 'j', buvid3: '' })
   assert.equal(headers.cookie, 'SESSDATA=s; bili_jct=j')
+  assert.equal(cookieHeader({ sessdata: 's', bili_jct: 'j', buvid3: 'b3', buvid4: 'b4' }), 'SESSDATA=s; bili_jct=j; buvid3=b3; buvid4=b4')
   assert.equal(cookieHeader(null), '')
 })
 

@@ -1,6 +1,6 @@
 {
   "name": "dsh-bili-chat-whale",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "聊天鲸：让 DSH 里的 agent 自己去找冷清的 B 站直播间，听懂主播在说什么、看懂画面在发生什么，再开口陪聊。",
   "keywords": [
     "dsh",
