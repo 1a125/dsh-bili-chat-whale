@@ -67,6 +67,7 @@ test('follow defaults stay off and are clamped', () => {
   const next = normalizeConfig({ follow: { dailyLimit: 0, minMessages: 99 }, followingPatrol: { enabled: true } }, DEFAULTS)
   assert.equal(next.follow.dailyLimit, 1)
   assert.equal(next.follow.minMessages, 20)
+  assert.equal(next.follow.minReplies, 3)
   assert.equal(next.followingPatrol.enabled, true)
 })
 
