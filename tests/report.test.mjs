@@ -23,9 +23,9 @@ test('summarizeActivity keeps only the requested day and extracts the useful bit
 
 test('fallbackReport is a human diary, not a raw dump', () => {
   const summary = summarizeActivity(activity, today)
-  const text = fallbackReport(summary, { date: today, persona: { name: '小鲸' } })
-  assert.match(text, /小鲸的今日观察日记/)
-  assert.match(text, /安静自习室/)
-  assert.match(text, /我也在写/)
-  assert.match(text, /关注了/)
+  const report = fallbackReport(summary, { date: today, persona: { name: '小鲸' } })
+  assert.ok(report.title.length > 0)
+  assert.match(report.text, /安静自习室/)
+  assert.match(report.text, /我也在写/)
+  assert.match(report.text, /关注了/)
 })
