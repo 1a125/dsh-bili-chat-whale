@@ -1,6 +1,6 @@
 {
   "name": "dsh-bili-chat-whale",
-  "version": "0.1.12",
+  "version": "0.2.0",
   "description": "聊天鲸：让 DSH 里的 agent 自己去找冷清的 B 站直播间，听懂主播在说什么、看懂画面在发生什么，再开口陪聊。",
   "keywords": [
     "dsh",
@@ -43,7 +43,7 @@
     }
   },
   "scripts": {
-    "test": "node --test tests/config.test.mjs tests/policy.test.mjs tests/discovery.test.mjs tests/bili.test.mjs tests/inject.test.mjs tests/session.test.mjs tests/auto-leave.test.mjs tests/clarify.test.mjs tests/special.test.mjs tests/update.test.mjs tests/report.test.mjs tests/follow-judge.test.mjs"
+    "test": "node --test tests/config.test.mjs tests/policy.test.mjs tests/discovery.test.mjs tests/bili.test.mjs tests/inject.test.mjs tests/session.test.mjs tests/auto-leave.test.mjs tests/clarify.test.mjs tests/special.test.mjs tests/update.test.mjs tests/report.test.mjs tests/follow-judge.test.mjs tests/schedule.test.mjs"
   },
   "repository": {
     "type": "git",
