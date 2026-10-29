@@ -45,13 +45,13 @@ test('enforces gap, per-room, hourly and daily caps', () => {
   assert.equal(gap.ok, false)
   assert.match(gap.reason, /再等/)
 
-  const room = evaluateSpeakPolicy(makeState({ room: { spoken: 2 } }), config, { roomId: '123', text: '你好' })
+  const room = evaluateSpeakPolicy(makeState({ room: { spoken: 5 } }), config, { roomId: '123', text: '你好' })
   assert.equal(room.ok, false)
 
-  const hour = evaluateSpeakPolicy(makeState({ counters: { hourCount: 2 } }), config, { roomId: '123', text: '你好' })
+  const hour = evaluateSpeakPolicy(makeState({ counters: { hourCount: 15 } }), config, { roomId: '123', text: '你好' })
   assert.equal(hour.ok, false)
 
-  const day = evaluateSpeakPolicy(makeState({ counters: { dayCount: 3 } }), config, { roomId: '123', text: '你好' })
+  const day = evaluateSpeakPolicy(makeState({ counters: { dayCount: 40 } }), config, { roomId: '123', text: '你好' })
   assert.equal(day.ok, false)
 })
 
