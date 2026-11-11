@@ -5,7 +5,7 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > GitHub：https://github.com/1a125/dsh-bili-chat-whale
-> 最新发布：https://github.com/1a125/dsh-bili-chat-whale/releases/tag/v0.2.2
+> 最新发布：https://github.com/1a125/dsh-bili-chat-whale/releases/tag/v0.2.3
 
 让 DSH 里的 agent **自己去找冷清的 B 站直播间**，蹲进去，**听懂主播在说什么、看懂画面在发生什么**，再用一句短弹幕陪聊。初衷很实在：刚开播、没什么观众的直播间，缺一个会接话的人。
 
@@ -19,6 +19,7 @@
 - 观察日记：巡游结束后自动生成并保存；可查看往期、打开日记文件夹、自定义保存位置
 - 巡游时间段：可设跨天时段，不在时段/停着/关闭主动巡查时停止抓流、语音、弹幕和巡查，避免空耗 token
 - 发弹幕频率：低/中/高三档，默认低档
+- 模型自选：设置页可选任意 provider/model 与推理等级，失败自动回退
 - 听懂：本地 **SenseVoice** 语音识别（不上传音频），每 20 秒听一段；识别模糊时尝试结合画面/上下文保守还原
 - 看懂：**DSH 视觉模型 → HTTP 视觉接口 → Windows 本机 OCR** 三级梯队
 - 会说话：到点叫醒属于它自己的 DSH 会话，让 agent 决定说一句还是闭嘴；所有发言过闸门
