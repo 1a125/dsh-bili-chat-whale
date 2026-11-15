@@ -2,7 +2,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
-import { readConfig } from '../lib/config.js'
+import { readConfig, effectiveMode } from '../lib/config.js'
 import { discoverRooms } from '../lib/discovery.js'
 import { sendDanmaku, readCredentials, roomInfo } from '../lib/bili.js'
 import { evaluateSpeakPolicy, logActivity, pushControl, readActivity, readState, recordSpeak, roomDir, withStateLock } from '../lib/store.js'
@@ -82,7 +82,7 @@ function humanStatus() {
   const config = readConfig()
   const state = readState()
   const lines = [
-    `模式：${config.mode}${config.interaction?.dryRun !== false ? '（演练，不真发）' : ''}`,
+    `模式：${effectiveMode(config)}${config.autonomy?.enabled === true ? '' : '（自主模式没开）'}${config.interaction?.dryRun !== false ? '（演练，不真发）' : ''}`,
     `阶段：${state.phase}`,
     state.room
       ? `当前房间：${state.room.roomId}「${state.room.title}」主播 ${state.room.uname || '?'} · ${state.room.online ?? '?'} 人在线 · 已待 ${Math.round((Date.now() - Number(state.room.enteredAt ?? 0)) / 60000)} 分钟`
@@ -127,7 +127,11 @@ async function main() {
     if (json) {
       return print({
         ok: true,
-        config: { mode: config.mode, dryRun: config.interaction?.dryRun !== false },
+        config: {
+          mode: effectiveMode(config),
+          autonomy: { enabled: config.autonomy?.enabled === true },
+          dryRun: config.interaction?.dryRun !== false,
+        },
         state: {
           phase: state.phase, room: state.room, cooldownUntil: state.cooldownUntil,
           candidates: state.candidates, lastError: state.lastError,

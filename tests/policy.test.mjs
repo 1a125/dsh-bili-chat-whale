@@ -5,6 +5,8 @@ import { DEFAULTS, normalizeConfig } from '../lib/config.js'
 
 function makeConfig(over = {}) {
   return normalizeConfig({
+    // 这些用例测的是具体闸门，前提是自主模式总闸开着
+    autonomy: { enabled: true },
     mode: 'interact',
     interaction: { dryRun: false, maxPerRoom: 2, minGapSec: 60, maxPerHour: 2, maxPerDay: 3 },
     ...over,
@@ -65,6 +67,13 @@ test('blocks exact and near duplicates', () => {
 test('watch and off modes never speak', () => {
   assert.equal(evaluateSpeakPolicy(makeState(), makeConfig({ mode: 'watch' }), { roomId: '123', text: '你好' }).ok, false)
   assert.equal(evaluateSpeakPolicy(makeState(), makeConfig({ mode: 'off' }), { roomId: '123', text: '你好' }).ok, false)
+})
+
+test('a closed autonomy switch blocks speaking even in interact mode', () => {
+  const config = makeConfig({ autonomy: { enabled: false }, mode: 'interact' })
+  const verdict = evaluateSpeakPolicy(makeState(), config, { roomId: '123', text: '你好' })
+  assert.equal(verdict.ok, false)
+  assert.match(verdict.reason, /自主模式/)
 })
 
 test('dry-run is carried from config, not decided by the policy', () => {

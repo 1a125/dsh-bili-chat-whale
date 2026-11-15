@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.4 — 自主模式总开关、模型覆盖全部链路、脱离 Web 宿主也能跑
+
+- 设置页顶部新增「自主模式」总开关：关掉 = 彻底停摆（不找房间、不听不看、不叫醒 agent）；打开才按下面档位工作
+- `autonomy.enabled` 成为唯一总闸，`effectiveMode(config)` 统一收口：关着时 `mode` 填什么都当 `off`
+- 档位三选改名：`停着（关自主模式）` 同时关总闸，`只看不说` / `会开口` 同时开总闸；打开时若档位是 `off` 自动切到 `会开口`
+- 叫醒 agent 的那一轮也用设置页选的模型：`send()` 在 `create` 之后、`prompt` 之前调 `controller.selectModel`，按路由变化缓存，失败只记日志不挡叫醒
+- 设置页「模型」hint 写明它同时用于：观察日记、语音纠错、关注判断、叫醒后的对话回合
+- `inject` 只保留 `sessionController`：`webServer` 改成可选注入，headless / CLI 宿主没有设置页时自主模式照常运行
+- 没有 `webServer` 时日志明确打「无 webServer，跳过设置页路由；自主模式照常运行」
+- 新增 `tests/autonomy.test.mjs`（effectiveMode 与 autonomy 收敛）与 `tests/session-model.test.mjs`（selectModel 调用、缓存、容错）
+- 66 个单元测试通过
+
 ## v0.2.3 — 插件自己的模型与推理等级选择
 
 - 设置页新增「用哪个模型」：可选宿主里的任意 provider/model，不再永远落到登录账号的默认模型
