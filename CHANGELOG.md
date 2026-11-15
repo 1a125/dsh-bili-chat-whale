@@ -11,6 +11,7 @@
 - 没有 `webServer` 时日志明确打「无 webServer，跳过设置页路由；自主模式照常运行」
 - 新增 `tests/autonomy.test.mjs`（effectiveMode 与 autonomy 收敛）与 `tests/session-model.test.mjs`（selectModel 调用、缓存、容错）
 - 66 个单元测试通过
+- npm 包不再打包 `bin/ffmpeg.exe`（64MB）：装好后在设置页点「下载 ffmpeg」即可，包里只有 132KB
 
 ## v0.2.3 — 插件自己的模型与推理等级选择
 

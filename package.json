@@ -23,7 +23,6 @@
   "files": [
     "lib",
     "tools",
-    "bin",
     "cordis.patch.yml",
     "locale",
     "icon.svg",
